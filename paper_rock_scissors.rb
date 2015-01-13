@@ -24,7 +24,9 @@ loop do
 
   if player_selection == computer_selection
     puts "It's a tie"
-  elsif player_selection == 'R' && computer_selection == 'P' || player_selection == 'P' && computer_selection == 'R' || player_selection == 'S' && computer_selection == 'P'
+  elsif player_selection == 'R' && computer_selection == 'P' \
+   || player_selection == 'P' && computer_selection == 'R' \
+   || player_selection == 'S' && computer_selection == 'P'
     winner_message(player_selection)
     puts "You won!"
   else
