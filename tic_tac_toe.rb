@@ -17,7 +17,7 @@ def draw_board(board)
   puts "  #{board[7]}  |  #{board[8]}  |  #{board[9]}  "
 end
 
-def check_empty_cell(board)
+def get_empty_cells(board)
   board.keys.select { |cell| board[cell] == ' '}
 end
 
@@ -47,7 +47,7 @@ def three_in_a_row(board)
   end
 end
 
-def board_full(board)
+def board_full?(board)
   check_empty_cell(board) == []
 end
 
