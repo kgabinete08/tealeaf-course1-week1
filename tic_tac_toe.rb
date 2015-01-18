@@ -25,12 +25,12 @@ def player_select(board)
   begin
     puts "Please choose a position to mark (1-9)."
     selection = gets.chomp.to_i
-  end until check_empty_cell(board).include?(selection)
+  end until get_empty_cells(board).include?(selection)
   board[selection] = 'X'
 end
 
 def computer_select(board)
-  comp_selection = check_empty_cell(board).sample
+  comp_selection = get_empty_cells(board).sample
   board[comp_selection] = 'O'
 end
 
@@ -48,7 +48,7 @@ def three_in_a_row(board)
 end
 
 def board_full?(board)
-  check_empty_cell(board) == []
+  get_empty_cells(board) == []
 end
 
 begin
