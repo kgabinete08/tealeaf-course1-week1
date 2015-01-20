@@ -23,10 +23,9 @@ def calculate_hand(hand)
 
   hand.each do |card|
     if card[:rank].to_i == 0
-      if card[:rank] == 'A'
-        ace_in_hand == true
-        count_ace + 1
-        total += 1
+      if card[:rank] == 'Ace'
+        ace_in_hand = true
+        count_ace += 1
       else
         total += 10
       end
@@ -37,18 +36,20 @@ def calculate_hand(hand)
     if ace_in_hand
       begin
         if total <= 10
-          total + 10
+          total + 11
+        else
+          total + 1
         end
-        count_ace - 1
+      count_ace - 1
       end while count_ace == 0 
     end
   end
-  total
+return total
 end
 
-def has_winner?(total, player)
+def winner?(total, player)
   if total == 21
-    puts "#{player_name} has Blackjack!, #{player_name} wins!"
+    puts "#{player} has Blackjack!, #{player} wins!"
     return true
   elsif total > 21
     puts "#{player} busted!"
@@ -87,6 +88,8 @@ begin
   calculate_hand(dealer_hand)
 
   has_winner = false
+  has_winner = winner?(player_total, "#{player_name}")
+  has_winner = winner?(dealer_total, "Dealer")
 
   begin
     puts "Please choose: 1) Hit 2) Stay"
@@ -103,16 +106,19 @@ begin
       draw_table(player_hand, dealer_hand)
       player_total = calculate_hand(player_hand)
     end
-    has_winner = has_winner?(player_total, "#{player_name}")
+    has_winner = winner?(player_total, "#{player_name}")
   end while has_winner == false && choice == 1
 
     if choice == 2
-      begin
-        dealer_hand.push(game_deck.pop)
-        draw_table(player_hand, dealer_hand)
-        dealer_total = calculate_hand(dealer_hand)
-      end while dealer_total < 17
-      has_winner = has_winner?(dealer_total, "Dealer")
+      dealer_total = calculate_hand(dealer_hand)
+        if dealer_total < 17
+          begin
+            dealer_hand.push(game_deck.pop)
+            draw_table(player_hand, dealer_hand)
+            dealer_total = calculate_hand(dealer_hand)
+          end until dealer_total >= 17
+        end
+      has_winner = winner?(dealer_total, "Dealer")
     end
 
   if !has_winner
@@ -129,7 +135,7 @@ begin
     puts "Would you like to play another hand? (Y/N)"
     answer = gets.chomp.upcase
   end while !['Y', 'N'].include?(answer)
-end while answer == 'N' || has_winner == true
+end while answer == 'Y'
 puts "Play again sometime!"
 
 # need a shuffled deck (discard used cards)
@@ -141,4 +147,3 @@ puts "Play again sometime!"
 # both blackjack equals ties
 # player can choose to hit or stay
 # until winner or bust
-
