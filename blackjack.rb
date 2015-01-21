@@ -41,6 +41,8 @@ def draw_table(player_hand, dealer_hand)
   puts "+-----------------------------------+"
 end
 
+# Gameplay
+
 puts "Let's play Blackjack!"
 puts "What is your name?"
 player_name = gets.chomp
@@ -79,6 +81,7 @@ begin
   has_winner = winner?(player_total, "#{player_name}")
   has_winner = winner?(dealer_total, "Dealer")
 
+#Player's turn
   begin
     puts "Please choose: 1) Hit 2) Stay"
     choice = gets.chomp.to_i
@@ -96,6 +99,7 @@ begin
     has_winner = winner?(player_total, "#{player_name}")
   end while has_winner == false && choice == 1
 
+#Dealer's turn
     if choice == 2
       dealer_total = calculate_hand(dealer_hand)
         if dealer_total < 17
@@ -108,6 +112,7 @@ begin
       has_winner = winner?(dealer_total, "Dealer")
     end
 
+#Compare
   if !has_winner
     player_total = calculate_hand(player_hand)
     dealer_total = calculate_hand(dealer_hand)
