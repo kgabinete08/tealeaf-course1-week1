@@ -1,50 +1,22 @@
-puts "Let's play Blackjack!"
-puts "What is your name?"
-player_name = gets.chomp
-
-puts "Welcome #{player_name}!"
-
-numbers = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King']
-suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs']
-
-deck = []
-suits.each do |suit_type|
-  numbers.each do |number|
-    deck.push({rank: number, suit: suit_type})
-  end
-end
-
-game_deck = deck.shuffle
+# Methods
 
 def calculate_hand(hand)
   total = 0
-  ace_in_hand = false
-  count_ace = 0
 
   hand.each do |card|
-    if card[:rank].to_i == 0
-      if card[:rank] == 'Ace'
-        ace_in_hand = true
-        count_ace += 1
-      else
-        total += 10
-      end
-    else  
+    if card[:rank] == 'Ace'
+      total += 11
+    elsif card[:rank].to_i == 0
+      total += 10
+    else
       total += card[:rank].to_i
     end
-
-    if ace_in_hand
-      begin
-        if total <= 10
-          total + 11
-        else
-          total + 1
-        end
-      count_ace - 1
-      end while count_ace == 0 
-    end
   end
-return total
+
+  hand.select { |card| card[:rank] == 'Ace' }.count.times do
+    total -= 10 if total > 21
+  end
+  total
 end
 
 def winner?(total, player)
@@ -69,12 +41,28 @@ def draw_table(player_hand, dealer_hand)
   puts "+-----------------------------------+"
 end
 
+puts "Let's play Blackjack!"
+puts "What is your name?"
+player_name = gets.chomp
+
+puts "Welcome #{player_name}!"
+
+numbers = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King']
+suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs']
+
+deck = []
+suits.each do |suit_type|
+  numbers.each do |number|
+    deck.push({rank: number, suit: suit_type})
+  end
+end
+
+game_deck = deck.shuffle
+
 begin
 
   player_hand = []
   dealer_hand = []
-  player_total = 0
-  dealer_total = 0
 
   player_hand.push(game_deck.pop)
   player_hand.push(game_deck.pop)
@@ -84,8 +72,8 @@ begin
 
   draw_table(player_hand, dealer_hand)
 
-  calculate_hand(player_hand)
-  calculate_hand(dealer_hand)
+  player_total = calculate_hand(player_hand)
+  dealer_total = calculate_hand(dealer_hand)
 
   has_winner = false
   has_winner = winner?(player_total, "#{player_name}")
@@ -97,7 +85,6 @@ begin
     if ![1, 2].include?(choice)
       puts "Please enter 1 or 2."
       has_winner = false
-      choice = 1
       next
     end
 
@@ -126,8 +113,10 @@ begin
     dealer_total = calculate_hand(dealer_hand)
     if player_total > dealer_total
       puts "#{player_name}'s total is #{player_total}, Dealer's total is #{dealer_total}. #{player_name} wins!"
-    else
+    elsif player_total < dealer_total
       puts "#{player_name}'s total is #{player_total}, Dealer's total is #{dealer_total}. Dealer wins!"
+    else
+      puts "It's a tie!"
     end
   end
 
@@ -137,13 +126,3 @@ begin
   end while !['Y', 'N'].include?(answer)
 end while answer == 'Y'
 puts "Play again sometime!"
-
-# need a shuffled deck (discard used cards)
-# take bet
-# player 1 and dealer both dealt 2 cards
-# calculate dealer total
-# if under 17 dealer must hit
-# if 21 blackjack win
-# both blackjack equals ties
-# player can choose to hit or stay
-# until winner or bust
